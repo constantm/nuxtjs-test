@@ -1,5 +1,13 @@
 <template>
   <div class="container">
+
+     <li v-for="story in stories">
+      <nuxt-link :to=blogLink(story)>{{ story.name }}</nuxt-link>
+    </li>
+
+    <pre class="text-left">
+        {{ links }}
+      </pre>
     <div>
       <logo />
       <nuxt-link to="/">Home page</nuxt-link>
@@ -34,6 +42,26 @@ import Logo from '~/components/Logo.vue'
 export default {
   components: {
     Logo
+  },
+  data () {
+    return {
+       story: { content: {} },
+       links: {},
+       stories: {}
+    }
+  },
+  methods: {
+    blogLink(story) {
+      return `blog/${story.slug}`
+    }
+  },
+  asyncData (context) {
+    return context.app.$storyapi.get('cdn/stories', {
+      "starts_with": "blog/"
+      })
+      .then((res) => {
+      return res.data
+    })
   }
 }
 </script>
